@@ -1,0 +1,340 @@
+<!--Project 1-->
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>Project 1</title>
+</head>
+<body>
+<section>
+
+<div>
+<canvas id="canvas" width="1274" height="704">
+This text is displayed if your browser does not support HTML5 Canvas.
+</canvas>
+</div>
+
+<script type="text/javascript">
+var canvas;
+var ctx;
+var dx = 5;
+var dy = 5;
+var x = 200;
+var y = 200;
+var WIDTH = 1274;//1200
+var HEIGHT = 704;//400
+var missileW = 10;//Missile width
+var missileH = 3;//Missile height
+var missileNum = 0;//Number of missile for array
+var missileSpeed = 4;
+var missiles = [];//Shoot player missiles
+var enemies = [];
+var enemyX = WIDTH+15;
+var enemyY = (Math.random()*.8*HEIGHT)-(HEIGHT*.1);
+var enemyMissiles = [];
+var score = 0;//Points earned by kills
+var lives = 3;//Initial lives
+var scoreElement;
+var lifeElement;
+var gameOver = false; //Set to true by winning or losing
+var gameStart = false;
+var enemyTime = 80;
+var d = new Date();
+var time = d.getTime();
+
+//var enemyY = 10;
+var enemySpeed = 2;
+playerImage = new Image();
+playerImage.src = 'images/player.png';
+playerImage.height = 55;
+playerImage.width = 50;
+enemyImage = new Image();
+enemyImage.src = 'images/enemy.png';
+enemyImage.height = 61;
+enemyImage.width = 70;
+background = new Image();
+background.src = 'images/brodyquest.png';
+loseScreen = new Image();
+loseScreen.src = 'images/sadbrody.jpg';
+winScreen = new Image();
+winScreen.src = 'images/happybrody.jpg';
+start = new Image();
+start.src = 'images/start.png';
+var playerX = 150;
+var playerY = (HEIGHT/2)-playerImage.height;
+var song = new Audio('BRODYQUEST.mp3');
+
+init();
+
+
+function circle(x,y,r) {
+ctx.beginPath();
+ctx.arc(x, y, r, 0, Math.PI*2, true);
+ctx.fill();
+}
+
+function rect(x,y,w,h) {
+ctx.beginPath();
+ctx.rect(x,y,w,h);
+ctx.closePath();
+ctx.fill();
+ctx.stroke();
+}
+
+function clear() {
+ctx.clearRect(0, 0, WIDTH, HEIGHT);
+}
+
+function init() {
+canvas = document.getElementById("canvas");
+ctx = canvas.getContext("2d");
+clear();
+ctx.fillStyle = "white";
+ctx.strokeStyle = "black";
+rect(0,0,WIDTH,HEIGHT);//Attempted to add start screen background
+
+ctx.fillStyle = "black";
+		ctx.font="100px Georgia";
+		ctx.fillText("Brody Quest", WIDTH/2-300, HEIGHT/2);
+		ctx.font="50px Georgia";
+		ctx.fillText("Press Enter to wake up Brody and begin your quest!", WIDTH/2-580, HEIGHT/2+100);
+song.play();
+return setInterval(game_loop, 10);
+}
+
+function setScore(x){
+	score = x;
+	document.getElementById("score").innerHTML = score;
+}
+
+function setLives(x){
+	lives = x;
+	document.getElementById("lives").innerHTML = lives;
+}
+
+//key mgmt
+var keys = new Array();
+function doKeyDown(evt){
+	keys[evt.keyCode] = true;
+	if(evt.keyCode == 32){//Hit space bar
+			shoot();
+	} 
+	if(evt.keyCode == 13){//Hit enter
+		gameStart=true;
+	}
+}
+function doKeyUp(evt){
+	keys[evt.keyCode] = false;
+}
+function move(){//Move object in all directions
+	if(gameStart==true){//Can't move player before game starts
+		if (38 in keys && keys[38]){ //up
+			if(playerY-dy>0){
+				playerY -= dy;
+			}
+		}
+		if (40 in keys && keys[40]){ //down
+			if(playerY+dy<HEIGHT-playerImage.height){
+				playerY += dy;
+			}
+		}
+		if (37 in keys && keys[37]){ //left
+			if(playerX-dx>0){
+				playerX -= dx;
+			}
+		}
+		if (39 in keys && keys[39]){ //right
+			if(playerX+dx<WIDTH-playerImage.width){
+				playerX += dx;
+			}
+		}
+	}
+}
+
+function Object(animate, move){
+	this.animate = animate;
+	this.move = move;
+	this.dead = false;
+}
+
+function shoot(){//Main player shoot mechanic
+	var missile = new Object(missileAn, missileMove);
+	missile.x = playerX+50;
+	missile.y = playerY+playerImage.height/2;
+	missile.r = 4;
+	missile.dx = missileSpeed;
+	missiles.push(missile);
+}
+
+function missileAn(){//Animate missile
+	ctx.fillStyle = "yellow";
+	circle(this.x, this.y, this.r);
+}
+
+function missileMove(){//Move missile
+	this.x = this.x + this.dx;
+	if (this.x > WIDTH){
+		missiles.splice(this, 1);
+		return;
+	}
+}
+
+function enemyShoot(x, y){//Enemy shoot mechanic
+	var enemyMissile = new Object(enemyMissileAn, enemyMissileMove);
+	enemyMissile.x = x;
+	enemyMissile.y = y+enemyImage.height/2;
+	enemyMissile.r = 4;
+	enemyMissile.dx = 6;
+	enemyMissiles.push(enemyMissile);
+}
+
+function enemyMissileAn(){//Animate missile
+	ctx.fillStyle = "red";
+	circle(this.x, this.y, this.r);
+}
+
+function enemyMissileMove(){//Move missile
+	this.x = this.x - this.dx;
+	if (this.x < -this.r){
+		enemyMissiles.splice(this, 1);
+		return;
+	}
+}
+
+function makeEnemy(){//Creates an enemy and adds to array
+	var enemy = new Object(enemyAn, enemyMove);
+	enemy.x = enemyX;
+	enemy.y = enemyY = (Math.random()*.8*HEIGHT)+(HEIGHT*.1);
+	enemy.dead=false;
+	enemy.dx = enemySpeed;
+	enemies.push(enemy);
+}
+
+function enemyAn(){//Animate enemy
+	ctx.drawImage(enemyImage, this.x, this.y);//Draws the enemy ship
+}
+
+function enemyMove(){//Move enemy
+	this.x = this.x - this.dx;
+	if (this.x < -enemyImage.width){
+		enemies.splice(this, 1);
+		return;
+	}
+	var d = new Date();
+	time = d.getTime();
+	var mod = time % enemyTime;//Use time to trigger enemy missiles
+	if(mod == 0){
+		enemyShoot(this.x, this.y);
+//	clear();
+		return;
+	}
+}
+
+function game_loop(){//controls the game
+if(gameStart==true){
+	if(score+5 > Math.random() * 3000){
+		makeEnemy();
+	};
+	missiles.forEach(function(missile){//move missile
+		missile.move();
+	});
+	enemies.forEach(function(enemy){//move enemy
+		enemy.move();
+	});
+	enemyMissiles.forEach(function(enemyMissile){//move missile
+		enemyMissile.move();
+	});
+	clear();
+	draw();
+	missiles.forEach(function(missile){//draw missile
+		missile.animate();
+	});
+	enemies.forEach(function(enemy){//move enemy
+		enemy.animate();
+	});
+	enemyMissiles.forEach(function(enemyMissile){//move missile
+		enemyMissile.animate();
+	});
+	enemies.forEach(function(enemy){//Detect if missile hits enemy
+		missiles.forEach(function(missile){
+			if(missile.x > enemy.x && missile.x + 4 < enemy.x + enemyImage.width&& missile.y + 4 > enemy.y && missile.y < enemy.y+enemyImage.height){
+				enemies.splice(this, 1);
+				missiles.splice(this, 1);
+				setScore(score+1);
+			}
+		});
+	});
+	enemyMissiles.forEach(function(enemyMissile){//Detect if enemy Missile hits player
+		if(enemyMissile.x - 4 < playerX + playerImage.width && enemyMissile.x + 4 > playerX && enemyMissile.y - 4 < playerY + playerImage.height && enemyMissile.y +4 > playerY){
+			
+				enemyMissiles.splice(this, 1);
+				setLives(lives-1);
+				lose();
+			}
+	});
+	enemies = enemies.filter(function(enemy){
+		return !enemy.dead;
+	});
+	//document.write(score);
+	checkWin();
+}
+
+}
+
+function checkWin(){//Happens if you win
+	if(score==25){
+		gameOver=true;
+		clear();
+		ctx.fillStyle = "white";
+		ctx.strokeStyle = "black";
+		rect(0,0,WIDTH,HEIGHT);
+		ctx.drawImage(winScreen,0,0, WIDTH, HEIGHT);
+		ctx.fillStyle = "white";
+		ctx.font="100px Georgia";
+		ctx.fillText("You Win!", WIDTH/2-580, HEIGHT/2);
+	}
+}
+
+function lose(){//Happens if you lose the game
+	if(lives==0){
+		gameOver=true;
+		clear();
+		ctx.fillStyle = "white";
+		ctx.strokeStyle = "black";
+		rect(0,0,WIDTH,HEIGHT);
+		ctx.drawImage(loseScreen,0,0, WIDTH, HEIGHT);
+		ctx.fillStyle = "white";
+		ctx.border = "1px solid black";
+		ctx.font="100px Georgia";
+		ctx.fillText("You Lose :(", WIDTH/2-600, HEIGHT/2+200);
+	}
+}
+
+function draw() {
+//movement, other between frame logic
+move();
+//stage maintenence
+clear();
+ctx.fillStyle = "white";
+ctx.strokeStyle = "black";
+rect(0,0,WIDTH,HEIGHT);
+    ctx.drawImage(background,0,0, WIDTH, HEIGHT);   
+ctx.drawImage(playerImage, playerX, playerY);//Draws the player plane
+}
+
+ticks = 0;
+
+window.addEventListener('keydown',doKeyDown,true);
+window.addEventListener('keyup',doKeyUp,true);//added
+
+</script>
+</section>
+<div>Score: <div id="score"> 0 </div><div>
+<div>Lives: <div id="lives"> 3 </div><div>
+<p>Score 25 points to win!</p>
+<p>Instructions: Move with arrow keys. Hit SPACE to fire</p>
+<div>Music By: Neil Cicierega</div>
+<div>Inspired Adrien Brody</div>
+<div>Art By: Tyler Goss</div>
+</body>
+</html>
