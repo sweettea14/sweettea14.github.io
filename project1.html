@@ -284,6 +284,7 @@ if(gameStart==true){
 function checkWin(){//Happens if you win
 	if(score==25){
 		gameOver=true;
+		gameStart=false;
 		clear();
 		ctx.fillStyle = "white";
 		ctx.strokeStyle = "black";
@@ -298,6 +299,7 @@ function checkWin(){//Happens if you win
 function lose(){//Happens if you lose the game
 	if(lives==0){
 		gameOver=true;
+		gameStart=false;
 		clear();
 		ctx.fillStyle = "white";
 		ctx.strokeStyle = "black";
