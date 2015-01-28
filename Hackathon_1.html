@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Hackathon 1</title>
+	</head>
+
+<body>
+	<canvas id="sign" width="500" height="500" style="border:10px solid black"> </canvas>
+	
+	<script>
+		var canvas=document.getElementById("sign");
+		var ctx = canvas.getContext("2d");
+		
+		ctx.fillStyle = "rgba(0, 150, 0, 1)";
+		ctx.beginPath();
+		ctx.arc(250, 250, 200, 0, Math.PI*2, true);
+		ctx.closePath();
+		ctx.fill();
+		
+		ctx.fillStyle = "rgba(255, 255, 255, 1)";
+		ctx.beginPath();
+		ctx.arc(250, 250, 165, 0, Math.PI*2, false);
+		ctx.closePath();
+		ctx.fill();
+		
+		ctx.fillStyle = "rgba(0,0,0,1)";
+		ctx.beginPath();
+		ctx.fillRect(160, 130, 180, 190);
+		ctx.closePath();
+		
+		ctx.fillStyle = "rgba(0,0,0,1)";
+		ctx.beginPath();
+		ctx.fillRect(160, 340, 25, 30);
+		ctx.closePath();
+		
+		ctx.fillStyle = "rgba(0,0,0,1)";
+		ctx.beginPath();
+		ctx.fillRect(190, 340, 25, 30);
+		ctx.closePath();
+	
+		ctx.fillStyle = "rgba(0,0,0,1)";
+		ctx.beginPath();
+		ctx.fillRect(285, 340, 25, 30);
+		ctx.closePath();
+		
+		ctx.fillStyle = "rgba(0,0,0,1)";
+		ctx.beginPath();
+		ctx.fillRect(315, 340, 25, 30);
+		ctx.closePath();
+		
+		ctx.fillStyle = "rgba(0, 0, 0, 1)";
+		ctx.beginPath();
+		ctx.arc(172.5, 340, 12.5, 0, Math.PI*2, false);
+		ctx.closePath();
+		ctx.fill();
+		
+		ctx.fillStyle = "rgba(0, 0, 0, 1)";
+		ctx.beginPath();
+		ctx.arc(172.5, 370, 12.5, 0, Math.PI*2, false);
+		ctx.closePath();
+		ctx.fill();
+		
+		ctx.fillStyle = "rgba(0, 0, 0, 1)";
+		ctx.beginPath();
+		ctx.arc(202.5, 340, 12.5, 0, Math.PI*2, false);
+		ctx.closePath();
+		ctx.fill();
+		
+		ctx.fillStyle = "rgba(0, 0, 0, 1)";
+		ctx.beginPath();
+		ctx.arc(202.5, 370, 12.5, 0, Math.PI*2, false);
+		ctx.closePath();
+		ctx.fill();
+		
+		ctx.fillStyle = "rgba(0, 0, 0, 1)";
+		ctx.beginPath();
+		ctx.arc(297.5, 340, 12.5, 0, Math.PI*2, false);
+		ctx.closePath();
+		ctx.fill();
+		
+		ctx.fillStyle = "rgba(0, 0, 0, 1)";
+		ctx.beginPath();
+		ctx.arc(297.5, 370, 12.5, 0, Math.PI*2, false);
+		ctx.closePath();
+		ctx.fill();
+		
+		ctx.fillStyle = "rgba(0, 0, 0, 1)";
+		ctx.beginPath();
+		ctx.arc(327.5, 340, 12.5, 0, Math.PI*2, false);
+		ctx.closePath();
+		ctx.fill();
+		
+		ctx.fillStyle = "rgba(0, 0, 0, 1)";
+		ctx.beginPath();
+		ctx.arc(327.5, 370, 12.5, 0, Math.PI*2, false);
+		ctx.closePath();
+		ctx.fill();
+	
+	</script>
+	
+
+</body>
+</html>

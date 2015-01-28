@@ -1,0 +1,197 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Ball Action </title>
+    	<style type="text/css">
+      		canvas { border: 3px solid black; }
+    		body { background-color: #FFF; }
+    		#canvas {background-color: #ccc;}
+    	</style>
+	<script type="text/javascript">
+
+var canvas;
+var context;
+ 
+// ball color
+var color = "#FF1C0A";
+
+// physical variables
+var g = 2; 			// gravity - (acceleration affecting Y only)
+var fac = 0.8; 		// velocity reduction factor per bounce
+var radius = 20; 	// ball radius
+var climb = 2;
+ 
+// initialize position and velocity of ball
+var x = 50;
+var y = 50;
+var vx = 2;
+var vy = 0;
+var scrolling = false;
+var sliding = false;
+var toggleOn=false;
+var rightWall=false;
+var topWall=false;
+var leftWall=false;
+var bottomWall=false;
+
+// ensures that code does not run before page has loaded
+window.onload = init; 
+
+	function init()
+	{
+	canvas = document.getElementById('canvas');
+	context = canvas.getContext('2d');
+
+	return setInterval( updateScroll, 1000/60 ); // 60 frames per second
+	}
+
+   	function updateScroll()//Update for scrolling
+	{
+  		// update velocity
+  		 // gravity
+ 
+  		// update position under conditions
+		if(scrolling==true || sliding ==true){
+			if(x<canvas.width-radius&&topWall==false){
+				x += vx;
+				toggleOn=true;
+			}
+			if(x==canvas.width-radius){
+				rightWall=true;
+			}
+			
+		//	y += vy;
+		}
+		if(rightWall==true && scrolling==true){//climb up right wall
+			y-=climb;
+			leftWall=false;
+		}
+		if(y==0+radius && leftWall==false && scrolling==true){//Roll left
+			rightWall=false;
+			topWall=true;
+			x-=vx;
+		}
+		if(topWall==true && x==0+radius && scrolling==true){//Roll down left wall
+			leftWall=true;
+			y += 2;
+		}
+		if(leftWall==true && y==canvas.height-radius && scrolling==true){
+			topWall=false;
+			bottomWall=true;
+		}
+		
+		if(sliding==true){
+		//	vy += g;
+		//	x += vx;
+			if(topWall==false){
+				y += g;
+			}	
+		
+ 
+			// handle bouncing (y-coordinate)
+			if (y > canvas.height - radius)
+			{
+					y = canvas.height - radius;
+					vy *= -fac;
+			} 
+		}
+		if(rightWall==true && sliding==true){//climb up right wall
+			if(y==0+radius){
+				topWall=true;
+			}
+			leftWall=false;
+		}
+		
+		
+		//Normal roll across screen
+		if(scrolling==false && sliding==false){
+			vy += g;
+			x += vx;
+			y += vy;
+		
+ 
+			// handle bouncing (y-coordinate)
+			if (y > canvas.height - radius)
+			{
+					y = canvas.height - radius;
+					vy *= -fac;
+			}
+	 
+			// wrap around (x-coordinate)
+			if(x > canvas.width + radius)
+			{
+				x = -radius;
+			}
+		}
+		if (y > canvas.height - radius)
+			{
+					y = canvas.height - radius;
+			}
+		drawBall();
+	}
+
+	function drawBall() 
+	{
+		with(context)
+		{
+        	clearRect(0, 0, canvas.width, canvas.height); 
+			fillStyle = color;
+			
+        	beginPath();
+        		arc(x, y, radius, 0, 2*Math.PI, true);
+        	closePath();
+        	fill();
+		}
+	};
+	function doKeyDown(evt){
+		if(evt.keyCode == 69){//Toggle scolling of ball
+		if(y==canvas.height-radius){
+			if(scrolling == false){
+				scrolling = true;
+			}
+		}
+			if(toggleOn == true){
+				scrolling = false;
+				toggleOn=false;
+				rightWall=false;
+				topWall=false;
+				leftWall=false;
+				bottomWall=false;
+			}
+		//	updateScroll();
+		}
+		
+		if(evt.keyCode == 83){//Toggle sliding of ball
+			if(y==canvas.height-radius){
+				sliding=true;
+				vy=0;
+			}
+		}
+		
+		if(evt.keyCode == 32){
+			if(y>0+radius){
+				y-=60;
+			}
+			if(topWall==true && sliding==true){
+				x-=10;
+			}
+		}
+	}
+	
+	window.addEventListener('keydown',doKeyDown,true);
+</script>
+</head>
+
+<body onload="init()">
+<canvas id="canvas" width="600" height="600">
+Your browser does not support the canvas element.
+</canvas>
+<p>Press E to toggle scrolling after the ball stops bouncing<p>
+<p>Press S to toggle sliding after the ball stops bouncing<p>
+<p>Press SPACEBAR to jump up<p>
+
+</body>
+</html>
+
