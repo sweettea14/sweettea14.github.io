@@ -1,0 +1,13 @@
+Grading.txt
+
+3 Levels - I have three levels that include parallax and a smaller camera view
+Splash Screen - My splash screen is separate from the levels. It gives a 
+	hint at what the game is.
+Sprite, Main Player - Dynamic
+Sprite, Main Player Dynamics - Running, Falling, Jumping, Swimming, Flying,
+	Climbing, Smooth Transitions; Swinging doesn't work
+Friendly Sprites - Self sprite, gives player key to spaceship
+Enemy Sprites - Aliens/Static and Dynamic
+3 Types Attack - Shotgun, grenade, jump/fall on enemy
+Player Attributes - Lives, health
+Box2d - Couldn't get it to work
